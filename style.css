@@ -1,14 +1,18 @@
-/* Basic Reset & Setup */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     font-family: 'Lato', sans-serif;
-    overflow: hidden; /* Prevent scrolling during intro */
+    overflow: hidden;
 }
 
-/* Intro Overlay */
 #intro-overlay {
     position: fixed;
     top: 0;
@@ -20,131 +24,127 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Transition for the reveal */
     transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-/* Hide main content initially (or let it sit under the overlay) */
+/* Main Content Layout */
 #main-content {
     width: 100%;
     height: 100%;
-    background: #fff; /* Contrast with black intro */
+    background: #fff;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* content is now aligned to top because of header */
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
 }
 
-/* Neon Button Styles */
 #btn-start {
-  position: relative;
-  display: inline-block;
-  padding: 25px 30px;
-  margin: 0; /* Centered in flex container, overriding snippet margin */
-  color: #03e9f4;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: 0.5s;
-  letter-spacing: 4px;
-  overflow: hidden;
-  /* Removed specific margins from snippet to maintain centering */
-  filter: hue-rotate(270deg); /* From snippet nth-child(1) */
+    position: relative;
+    display: inline-block;
+    padding: 25px 30px;
+    margin: 0;
+    color: #03e9f4;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    letter-spacing: 4px;
+    overflow: hidden;
+    filter: hue-rotate(270deg);
 }
 
 #btn-start:hover {
-  background: #03e9f4;
-  color: #050801;
-  box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4,
-    0 0 200px #03e9f4;
-  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+    background: #03e9f4;
+    color: #050801;
+    box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4,
+        0 0 200px #03e9f4;
 }
 
 #btn-start span {
-  position: absolute;
-  display: block;
+    position: absolute;
+    display: block;
 }
 
 #btn-start span:nth-child(1) {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #03e9f4);
-  animation: animate1 1s linear infinite;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #03e9f4);
+    animation: animate1 1s linear infinite;
 }
 
 @keyframes animate1 {
-  0% {
-    left: -100%;
-  }
-  50%,
-  100% {
-    left: 100%;
-  }
+    0% {
+        left: -100%;
+    }
+    50%,
+    100% {
+        left: 100%;
+    }
 }
 
 #btn-start span:nth-child(2) {
-  top: -100%;
-  right: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(180deg, transparent, #03e9f4);
-  animation: animate2 1s linear infinite;
-  animation-delay: 0.25s;
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #03e9f4);
+    animation: animate2 1s linear infinite;
+    animation-delay: 0.25s;
 }
 
 @keyframes animate2 {
-  0% {
-    top: -100%;
-  }
-  50%,
-  100% {
-    top: 100%;
-  }
+    0% {
+        top: -100%;
+    }
+    50%,
+    100% {
+        top: 100%;
+    }
 }
 
 #btn-start span:nth-child(3) {
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(270deg, transparent, #03e9f4);
-  animation: animate3 1s linear infinite;
-  animation-delay: 0.5s;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #03e9f4);
+    animation: animate3 1s linear infinite;
+    animation-delay: 0.5s;
 }
 
 @keyframes animate3 {
-  0% {
-    right: -100%;
-  }
-  50%,
-  100% {
-    right: 100%;
+    0% {
+        right: -100%;
+    }
+    50%,
+    100% {
+        right: 100%;
   }
 }
 
 #btn-start span:nth-child(4) {
-  bottom: -100%;
-  left: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(360deg, transparent, #03e9f4);
-  animation: animate4 1s linear infinite;
-  animation-delay: 0.75s;
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #03e9f4);
+    animation: animate4 1s linear infinite;
+    animation-delay: 0.75s;
 }
 
 @keyframes animate4 {
-  0% {
-    bottom: -100%;
-  }
-  50%,
-  100% {
-    bottom: 100%;
+    0% {
+        bottom: -100%;
+    }
+    50%,
+    100% {
+        bottom: 100%;
   }
 }
 
-/* Classes for Reveal Effect */
 .fade-out {
     opacity: 0;
     pointer-events: none;
@@ -152,7 +152,62 @@ body, html {
 }
 
 .reveal-overlay {
-    /* Slide up or fade out the overlay */
     transform: translateY(-100%);
     pointer-events: none;
+}
+
+#main-header {
+    width: 95%;
+    background: #ffffff;
+    padding: 15px 30px;
+    box-shadow: 0 0px 7px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    margin-top: 20px;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+#profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #03f467;
+    box-shadow: 0 0 5px #03f467;
+    margin-bottom: 0; 
+}
+
+.profile-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#profile-name {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+#profile-bio {
+    font-size: 1rem;
+    color: #555;
+    margin: 10px 0;
+    font-style: italic;
+}
+
+#profile-location {
+    font-size: 1rem;
+    color: #777;
+    margin: 0;
 }
