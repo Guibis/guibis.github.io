@@ -1,6 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('btn-start');
     const overlay = document.getElementById('intro-overlay');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    // Theme Toggle Logic
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
+    }
 
     if (startBtn && overlay) {
         startBtn.addEventListener('click', () => {
