@@ -1,24 +1,35 @@
+const IS_DEV_MODE = true;
+
 document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('btn-start');
     const overlay = document.getElementById('intro-overlay');
     const themeToggle = document.getElementById('theme-toggle');
 
-    // Theme Toggle Logic
-    const currentTheme = localStorage.getItem('theme');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    function updateThemeButton(theme) {
+        if (themeToggle) {
+            themeToggle.textContent = theme === 'dark' ? 'Dark' : 'Light';
+        }
+    }
+
     if (currentTheme === 'dark') {
         document.body.classList.add('dark-mode');
     }
+    updateThemeButton(currentTheme);
 
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
-            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
+            const newTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
         });
     }
 
     if (startBtn && overlay) {
-        startBtn.addEventListener('click', () => {
+        startBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             startBtn.classList.add('fade-out');
             setTimeout(() => {
                 overlay.classList.add('reveal-overlay');
@@ -60,9 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
         headerSection.appendChild(headerContent);
 
         try {
-            const response = await fetch('https://api.github.com/users/Guibis');
-            if (!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
+            let data;
+            if (IS_DEV_MODE && typeof MOCK_PROFILE !== 'undefined') {
+                console.log('Using mock profile data');
+                data = MOCK_PROFILE;
+            } else {
+                const response = await fetch('https://api.github.com/users/Guibis');
+                if (!response.ok) throw new Error('Network response was not ok');
+                data = await response.json();
+            }
 
             if (data.avatar_url) avatar.src = data.avatar_url;
             if (data.name) name.textContent = data.name;
@@ -93,9 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
         mainContent.appendChild(repoSection);
 
         try {
-            const response = await fetch('https://api.github.com/users/Guibis/repos?sort=updated');
-            if (!response.ok) throw new Error('Failed to fetch repos');
-            const repos = await response.json();
+            let repos;
+            if (IS_DEV_MODE && typeof MOCK_REPOS !== 'undefined') {
+                console.log('Using mock repos data');
+                repos = MOCK_REPOS;
+            } else {
+                const response = await fetch('https://api.github.com/users/Guibis/repos?sort=updated');
+                if (!response.ok) throw new Error('Failed to fetch repos');
+                repos = await response.json();
+            }
 
             const filteredRepos = repos.filter(repo => {
                 const isNotFork = !repo.fork;
@@ -103,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return isNotFork && hasPortfolioTopic; 
             });
 
-            filteredRepos.forEach(repo => {
+            const repoCards = filteredRepos.map(repo => {
                 const card = document.createElement('div');
                 card.className = 'repo-card';
 
@@ -111,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const link = document.createElement('a');
                 link.href = repo.html_url;
                 link.target = '_blank';
-                link.textContent = repo.name;
+                link.textContent = `🌐 ${repo.name}`;
                 repoTitle.appendChild(link);
 
                 const desc = document.createElement('p');
@@ -123,11 +146,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 lang.textContent = repo.language || 'Code';
                 meta.appendChild(lang);
 
+                if (repo.homepage) {
+                    const demoLink = document.createElement('a');
+                    demoLink.href = repo.homepage;
+                    demoLink.target = '_blank';
+                    demoLink.className = 'live-demo-btn';
+                    demoLink.textContent = 'View Page 🔗';
+                    meta.appendChild(demoLink);
+                }
+
+                if(!repo.homepage) {
+                    meta.style.justifyContent = 'flex-end';
+                }
+
                 card.appendChild(repoTitle);
                 card.appendChild(desc);
                 card.appendChild(meta);
-                repoGrid.appendChild(card);
-            }); 
+                
+                return card;
+            });
+
+            repoCards.forEach(card => repoGrid.appendChild(card)); 
 
         } catch (error) {
             console.error('Error fetching repos:', error);
