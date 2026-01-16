@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('btn-start');
     const overlay = document.getElementById('intro-overlay');
     const themeToggle = document.getElementById('theme-toggle');
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
 
     const currentTheme = localStorage.getItem('theme') || 'light';
     
@@ -37,9 +39,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function fetchProfile() {
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearch();
+        });
+    }
+
+    function handleSearch() {
+        const username = searchInput.value.trim();
+        if (username) {
+            fetchProfile(username);
+            fetchRepos(username);
+        }
+    }
+
+
+    async function fetchProfile(username = 'Guibis') {
         const headerSection = document.getElementById('main-header');
         if (!headerSection) return;
+        
+        // Clear previous content
+        headerSection.innerHTML = '';
 
         const headerContent = document.createElement('div');
         headerContent.className = 'header-content';
@@ -76,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Using mock profile data');
                 data = MOCK_PROFILE;
             } else {
-                const response = await fetch('https://api.github.com/users/Guibis');
+                const response = await fetch(`https://api.github.com/users/${username}`);
                 
                 if (response.status === 403) {
                     console.warn("Github is taking a nap... Using fallback profile data.");
@@ -101,9 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function fetchRepos() {
+    async function fetchRepos(username = 'Guibis') {
         const mainContent = document.getElementById('main-content');
         if (!mainContent) return;
+
+        // Clear previous repo section if exists
+        const existingRepoSection = document.getElementById('repo-section');
+        if (existingRepoSection) {
+            existingRepoSection.remove();
+        }
 
         const repoSection = document.createElement('section');
         repoSection.id = 'repo-section';
@@ -122,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Using mock repos data');
                 repos = MOCK_REPOS;
             } else {
-                const response = await fetch('https://api.github.com/users/Guibis/repos?sort=updated');
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
                 
                 if (response.status === 403) {
                     console.warn("Github is taking a nap... Using fallback repos data.");
@@ -135,9 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const filteredRepos = repos.filter(repo => {
-                const isNotFork = !repo.fork;
-                const hasPortfolioTopic = repo.topics && repo.topics.includes('portfolio');
-                return isNotFork && hasPortfolioTopic; 
+                return !repo.fork;
             });
 
             const repoCards = filteredRepos.map(repo => {
@@ -148,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const link = document.createElement('a');
                 link.href = repo.html_url;
                 link.target = '_blank';
-                link.textContent = `🌐 ${repo.name}`;
+                link.innerHTML = `<img src="assets/github.svg" alt="GitHub" class="repo-icon"> ${repo.name}`;
                 repoTitle.appendChild(link);
 
                 const desc = document.createElement('p');
@@ -165,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     demoLink.href = repo.homepage;
                     demoLink.target = '_blank';
                     demoLink.className = 'live-demo-btn';
-                    demoLink.textContent = 'View Page 🔗';
+                    demoLink.innerHTML = `<img src="assets/website.svg" alt="Live Demo" class="btn-icon"> View Page`;
                     meta.appendChild(demoLink);
                 }
 

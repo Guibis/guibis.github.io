@@ -6,7 +6,7 @@
     <title>Portfolio Intro</title>
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon-32x32.png">
+    <link rel="icon" href="assets/favicon-32x32.png">
 </head>
 <body>
     <div id="intro-overlay">
@@ -20,7 +20,13 @@
     </div>
 
     <div id="main-content">
-        <button id="theme-toggle" aria-label="Toggle theme"></button>
+        <div id="controls-bar">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="GitHub Username">
+                <button id="search-btn">Search</button>
+            </div>
+            <button id="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
         <section id="main-header">
         </section>
     </div>
