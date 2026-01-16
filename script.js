@@ -1,4 +1,4 @@
-const IS_DEV_MODE = true;
+const IS_DEV_MODE = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('btn-start');
@@ -77,8 +77,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 data = MOCK_PROFILE;
             } else {
                 const response = await fetch('https://api.github.com/users/Guibis');
-                if (!response.ok) throw new Error('Network response was not ok');
-                data = await response.json();
+                
+                if (response.status === 403) {
+                    console.warn("Github is taking a nap... Using fallback profile data.");
+                    data = MOCK_PROFILE;
+                } else if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                } else {
+                    data = await response.json();
+                }
             }
 
             if (data.avatar_url) avatar.src = data.avatar_url;
@@ -116,8 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 repos = MOCK_REPOS;
             } else {
                 const response = await fetch('https://api.github.com/users/Guibis/repos?sort=updated');
-                if (!response.ok) throw new Error('Failed to fetch repos');
-                repos = await response.json();
+                
+                if (response.status === 403) {
+                    console.warn("Github is taking a nap... Using fallback repos data.");
+                    repos = MOCK_REPOS;
+                } else if (!response.ok) {
+                    throw new Error('Failed to fetch repos');
+                } else {
+                    repos = await response.json();
+                }
             }
 
             const filteredRepos = repos.filter(repo => {
